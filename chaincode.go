@@ -26,6 +26,7 @@ import (
 	"encoding/json"
 	"time"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
+
 )
 
 // Test comment
@@ -72,6 +73,7 @@ type Contract struct {
 	StartDate   time.Time   `json:"StartDate"`
 	EndDate		time.Time   `json:"EndDate"`
 	Method	    string   `json:"Method"`
+	DiscountRate float64  `json:"DiscountRate"`
 }
 
 
@@ -291,11 +293,15 @@ func (t *SimpleChaincode) Run(stub *shim.ChaincodeStub, function string, args []
 func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	fmt.Println("invoke is running " + function)
 
+
+	
 	// Handle different functions
 	if function == "init" {													//initialize the chaincode state, used as reset
 		return t.Init(stub, "init", args)
 	} else if function == "transferPoints" {											//create a transaction
 		return t.transferPoints(stub, args)
+	} else if function == "addSmartContract" {											//create a transaction
+		return t.addSmartContract(stub, args)
 	} 
 	fmt.Println("invoke did not find func: " + function)					//error
 
@@ -453,6 +459,56 @@ func feedbackContract(tx Transaction, stub *shim.ChaincodeStub) float64 {
   
 }
 
+func (t *SimpleChaincode) addSmartContract(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+
+
+	// Create new smart contract based on user input
+	var smartContract Contract
+	
+	discountRate, err := strconv.ParseFloat(args[4], 64)
+	if err != nil {
+		smartContract.Title= "Invalid Contract"
+	}else{
+		smartContract.DiscountRate = discountRate
+	}
+	
+	
+	smartContract.Id = args[0]
+	smartContract.BusinessId  = "T5940872"
+	smartContract.BusinessName = "Open Travel"
+	smartContract.Title = args[1]
+	smartContract.Description = ""
+	smartContract.Conditions = append(smartContract.Conditions, args[2])
+	smartContract.Conditions = append(smartContract.Conditions, args[3]) 
+	smartContract.Icon = ""
+	smartContract.Method = "travelContract"
+	
+	
+	jsonAsBytes, _ := json.Marshal(smartContract)
+	err = stub.PutState(smartContract.Id, jsonAsBytes)								
+	if err != nil {
+		fmt.Println("Error adding new smart contract")
+		return nil, err
+	}
+
+	contractIdsAsBytes, _ := stub.GetState("contractIds")
+	var contractIds []string
+	json.Unmarshal(contractIdsAsBytes, &contractIds)
+	
+	contractIds = append(contractIds, smartContract.Id);
+	
+	jsonAsBytes, _ = json.Marshal(contractIds)
+	err = stub.PutState("contractIds", jsonAsBytes)								
+	if err != nil {
+		fmt.Println("Error storing contract Ids on blockchain")
+		return nil, err
+	}
+
+	return nil, nil
+
+}
+
+
 // ============================================================================================================================
 // Transfer points between members of the Open Points Network
 // ============================================================================================================================
@@ -516,9 +572,27 @@ func (t *SimpleChaincode) transferPoints(stub *shim.ChaincodeStub, args []string
 		tx.Amount = travelContract(tx, stub)
 	} else if (tx.ContractId == FEEDBACK_CONTRACT) {
 		tx.Amount = feedbackContract(tx, stub)
+	}  else {
+	
+		contractIdsAsBytes, _ := stub.GetState("contractIds")
+		var contractIds []string
+		json.Unmarshal(contractIdsAsBytes, &contractIds)
+	
+		for i := range contractIds{
+			contractAsBytes, _ := stub.GetState(contractIds[i])
+			var thisContract Contract
+			json.Unmarshal(contractAsBytes, &thisContract)
+			
+			if (tx.ContractId == thisContract.Id) {
+				tx.Amount =  tx.Amount * thisContract.DiscountRate;
+			}
+		}
+	
+	
+	
 	}
 	
-
+	
 	// Get Receiver account from BC and update point balance
 	rfidBytes, err := stub.GetState(tx.To)
 	if err != nil {
