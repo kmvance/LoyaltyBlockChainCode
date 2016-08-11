@@ -33,13 +33,15 @@ import (
 type SimpleChaincode struct {
 }
 
-
+// Maximum number of transactions to return
 const NUM_TX_TO_RETURN = 27
-const DOUBLE_CONTRACT   = "C289416"
+
+// Smart Contract Id numbers
+const TRAVEL_CONTRACT   = "C289416"
 const FEEDBACK_CONTRACT = "C791594"
 
 
-// Blockchain point transaction records
+// Blockchain point transaction record
 type Transaction struct {
 	RefNumber   string   `json:"RefNumber"`
 	Date 		time.Time   `json:"Date"`
@@ -74,7 +76,7 @@ type Contract struct {
 
 
 
-// Open Points Network member record
+// Open Points member record
 type User struct {
 	UserId		string   `json:"UserId"`
 	Name   		string   `json:"Name"`
@@ -212,7 +214,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	
 	// Create contract metadata for double points and add it to the blockchain
 	var double Contract
-	double.Id = DOUBLE_CONTRACT
+	double.Id = TRAVEL_CONTRACT
 	double.BusinessId  = "T5940872"
 	double.BusinessName = "Open Travel"
 	double.Title = "Paris for Less"
@@ -220,7 +222,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	double.Conditions = append(double.Conditions, "Half off dining and travel activities in Paris")
 	double.Conditions = append(double.Conditions, "Valid from May 11, 2016") 
 	double.Icon = ""
-	double.Method = "doubleContract"
+	double.Method = "travelContract"
 	
 	startDate, _  := time.Parse(time.RFC822, "11 May 16 12:00 UTC")
 	double.StartDate = startDate
@@ -228,7 +230,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	double.EndDate = endDate
 	
 	jsonAsBytes, _ = json.Marshal(double)
-	err = stub.PutState(DOUBLE_CONTRACT, jsonAsBytes)								
+	err = stub.PutState(TRAVEL_CONTRACT, jsonAsBytes)								
 	if err != nil {
 		fmt.Println("Error creating double contract")
 		return nil, err
@@ -262,8 +264,8 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	
 	// Create an array of contract ids to keep track of all contracts
 	var contractIds []string
-	contractIds = append(contractIds, DOUBLE_CONTRACT);
-	contractIds = append(contractIds, FEEDBACK_CONTRACT);
+	contractIds = append(contractIds, TRAVEL_CONTRACT);
+	//contractIds = append(contractIds, FEEDBACK_CONTRACT);
 	
 	jsonAsBytes, _ = json.Marshal(contractIds)
 	err = stub.PutState("contractIds", jsonAsBytes)								
@@ -292,8 +294,6 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	// Handle different functions
 	if function == "init" {													//initialize the chaincode state, used as reset
 		return t.Init(stub, "init", args)
-	} else if function == "updateUserAccount" {											//create a transaction
-		return t.updateUserAccount(stub, args) 
 	} else if function == "transferPoints" {											//create a transaction
 		return t.transferPoints(stub, args)
 	} 
@@ -311,7 +311,6 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 	
 	if function == "getTxs" { return t.getTxs(stub, args[1]) }
 	if function == "getUserAccount" { return t.getUserAccount(stub, args[1]) }
-	if function == "getContractDetails" { return t.getContractDetails(stub, args[1]) }
 	if function == "getAllContracts" { return t.getAllContracts(stub) }
 	
 	
@@ -357,7 +356,7 @@ func (t *SimpleChaincode) getTxs(stub *shim.ChaincodeStub, userId string)([]byte
 	var txs AllTransactions
 	json.Unmarshal(allTxAsBytes, &txs)
 	numTxs := len(txs.Transactions)
-	//numToReturn := int(math.Min(float64(numTxs), float64(NUM_TX_TO_RETURN)))
+
 	for i := numTxs -1; i >= 0; i-- {
 	    if txs.Transactions[i].From == userId{
 			res.Transactions = append(res.Transactions, txs.Transactions[i])
@@ -377,21 +376,8 @@ func (t *SimpleChaincode) getTxs(stub *shim.ChaincodeStub, userId string)([]byte
 }
 
 
-
 // ============================================================================================================================
-// Get the contract metadata of a single smart contract from the blockchain
-// ============================================================================================================================
-func (t *SimpleChaincode) getContractDetails(stub *shim.ChaincodeStub, contractId string)([]byte, error)  {
-
-	contractAsBytes, _ := stub.GetState(contractId)
-
-
-	return contractAsBytes, nil
-
-}
-
-// ============================================================================================================================
-// Get the contract metadata of all contracts from the blockchain
+// Get the smart contract metadata from the blockchain
 // ============================================================================================================================
 func (t *SimpleChaincode) getAllContracts(stub *shim.ChaincodeStub)([]byte, error)  {
 
@@ -415,10 +401,10 @@ func (t *SimpleChaincode) getAllContracts(stub *shim.ChaincodeStub)([]byte, erro
 // ============================================================================================================================
 // Smart contract for giving user double points
 // ============================================================================================================================
-func doubleContract(tx Transaction, stub *shim.ChaincodeStub) float64 {
+func travelContract(tx Transaction, stub *shim.ChaincodeStub) float64 {
 
 
-	contractAsBytes, err := stub.GetState(DOUBLE_CONTRACT)
+	contractAsBytes, err := stub.GetState(TRAVEL_CONTRACT)
 	if err != nil {
 		return -99
 	}
@@ -526,8 +512,8 @@ func (t *SimpleChaincode) transferPoints(stub *shim.ChaincodeStub, args []string
 	}
 	
 	// Determine point amount to transfer based on contract type
-	if (tx.ContractId == DOUBLE_CONTRACT) {
-		tx.Amount = doubleContract(tx, stub)
+	if (tx.ContractId == TRAVEL_CONTRACT) {
+		tx.Amount = travelContract(tx, stub)
 	} else if (tx.ContractId == FEEDBACK_CONTRACT) {
 		tx.Amount = feedbackContract(tx, stub)
 	}
@@ -580,7 +566,7 @@ func (t *SimpleChaincode) transferPoints(stub *shim.ChaincodeStub, args []string
 	//get the AllTransactions index
 	allTxAsBytes, err := stub.GetState("allTx")
 	if err != nil {
-		return nil, errors.New("SubmitTx Failed to get all Transactions")
+		return nil, errors.New("transferPoints: Failed to get all Transactions")
 	}
 
 	//Update transactions arrary and commit to BC
@@ -598,39 +584,3 @@ func (t *SimpleChaincode) transferPoints(stub *shim.ChaincodeStub, args []string
 	return nil, nil
 
 }
-
-// ============================================================================================================================
-// Update Open Points memeber point balance
-// ============================================================================================================================
-func (t *SimpleChaincode) updateUserAccount(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
-
-	fmt.Println("Running updateUserAccount")
-
-	userId := args[0]
-	amountValue, err := strconv.ParseFloat(args[1], 64)
-	
-
-	// Get user account from the blockchain
-	rfidBytes, err := stub.GetState(userId)
-	if err != nil {
-		return nil, errors.New("updateUserAccount Failed to get User from BC")
-	}
-	
-	var account User
-	fmt.Println("SubmitTx Unmarshalling User Struct");
-	err = json.Unmarshal(rfidBytes, &account)
-	account.Balance = account.Balance  + amountValue
-	
-	// Commit user account to ledger
-	fmt.Println("SubmitTx Commit Updated user account To Ledger");
-	txsAsBytes, _ := json.Marshal(account)
-	err = stub.PutState(userId, txsAsBytes)	
-	if err != nil {
-		return nil, err
-	}
-
-	
-	return nil, nil
-
-}
-
