@@ -318,7 +318,7 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 	if function == "getTxs" { return t.getTxs(stub, args[1]) }
 	if function == "getUserAccount" { return t.getUserAccount(stub, args[1]) }
 	if function == "getAllContracts" { return t.getAllContracts(stub) }
-	
+	if function == "getNewReferenceNumber" { return t.getNewReferenceNumber(stub) }
 	
 	fmt.Println("query did not find func: " + function)						//error
 
@@ -403,6 +403,32 @@ func (t *SimpleChaincode) getAllContracts(stub *shim.ChaincodeStub)([]byte, erro
 	return asBytes, nil
 
 }
+
+
+func (t *SimpleChaincode) getNewReferenceNumber(stub *shim.ChaincodeStub)([]byte, error)  {
+
+	var refNumber int
+	refNumberBytes, numErr := stub.GetState("refNumber")
+	if numErr != nil {
+		fmt.Println("Error Getting  ref number")
+		return nil, numErr
+	}
+	
+	json.Unmarshal(refNumberBytes, &refNumber)
+	refNumber = refNumber + 1;
+	refNumberBytes, _ = json.Marshal(refNumber)
+	err := stub.PutState("refNumber", refNumberBytes)								
+	if err != nil {
+		fmt.Println("Error Creating updating ref number")
+		return nil, err
+	}
+	
+	
+	
+	return refNumberBytes, nil
+
+}
+
 
 // ============================================================================================================================
 // Smart contract for giving user double points
