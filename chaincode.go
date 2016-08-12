@@ -302,7 +302,10 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 		return t.transferPoints(stub, args)
 	} else if function == "addSmartContract" {											//create a transaction
 		return t.addSmartContract(stub, args)
+	} else if function == "incrementReferenceNumber" {											//create a transaction
+		return t.incrementReferenceNumber(stub, args)
 	} 
+		
 	fmt.Println("invoke did not find func: " + function)					//error
 
 	return nil, errors.New("Received unknown function invocation")
@@ -318,7 +321,7 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 	if function == "getTxs" { return t.getTxs(stub, args[1]) }
 	if function == "getUserAccount" { return t.getUserAccount(stub, args[1]) }
 	if function == "getAllContracts" { return t.getAllContracts(stub) }
-	if function == "getNewReferenceNumber" { return t.getNewReferenceNumber(stub) }
+	if function == "getReferenceNumber" { return t.getReferenceNumber(stub) }
 	
 	fmt.Println("query did not find func: " + function)						//error
 
@@ -405,7 +408,9 @@ func (t *SimpleChaincode) getAllContracts(stub *shim.ChaincodeStub)([]byte, erro
 }
 
 
-func (t *SimpleChaincode) getNewReferenceNumber(stub *shim.ChaincodeStub)([]byte, error)  {
+
+func (t *SimpleChaincode) incrementReferenceNumber(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+
 
 	var refNumber int
 	refNumberBytes, numErr := stub.GetState("refNumber")
@@ -422,8 +427,18 @@ func (t *SimpleChaincode) getNewReferenceNumber(stub *shim.ChaincodeStub)([]byte
 		fmt.Println("Error Creating updating ref number")
 		return nil, err
 	}
-	
-	
+
+	return nil, nil
+}
+
+
+func (t *SimpleChaincode) getReferenceNumber(stub *shim.ChaincodeStub)([]byte, error)  {
+
+	refNumberBytes, numErr := stub.GetState("refNumber")
+	if numErr != nil {
+		fmt.Println("Error Getting  ref number")
+		return nil, numErr
+	}
 	
 	return refNumberBytes, nil
 
