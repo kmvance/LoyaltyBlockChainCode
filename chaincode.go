@@ -267,7 +267,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	// Create an array of contract ids to keep track of all contracts
 	var contractIds []string
 	contractIds = append(contractIds, TRAVEL_CONTRACT);
-	//contractIds = append(contractIds, FEEDBACK_CONTRACT);
+	contractIds = append(contractIds, FEEDBACK_CONTRACT);
 	
 	jsonAsBytes, _ = json.Marshal(contractIds)
 	err = stub.PutState("contractIds", jsonAsBytes)								
@@ -536,7 +536,19 @@ func (t *SimpleChaincode) addSmartContract(stub *shim.ChaincodeStub, args []stri
 	var contractIds []string
 	json.Unmarshal(contractIdsAsBytes, &contractIds)
 	
-	contractIds = append(contractIds, smartContract.Id);
+	
+	var contractIdFound bool
+	contractIdFound = false;
+	for i := range contractIds{
+		if (contractIds[i] == smartContract.Id)  {
+			contractIdFound = true;
+		}
+	}
+	
+	if (!contractIdFound) {
+		contractIds = append(contractIds, smartContract.Id);
+	}
+	
 	
 	jsonAsBytes, _ = json.Marshal(contractIds)
 	err = stub.PutState("contractIds", jsonAsBytes)								
