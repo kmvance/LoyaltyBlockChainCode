@@ -38,8 +38,8 @@ type SimpleChaincode struct {
 const NUM_TX_TO_RETURN = 27
 
 // Smart Contract Id numbers
-const TRAVEL_CONTRACT   = "C289416"
-const FEEDBACK_CONTRACT = "C791594"
+const TRAVEL_CONTRACT   = "Paris"
+const FEEDBACK_CONTRACT = "Feedback"
 
 
 // Blockchain point transaction record
