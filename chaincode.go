@@ -244,7 +244,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	feedback.Id = FEEDBACK_CONTRACT
 	feedback.BusinessId  = "T5940872"
 	feedback.BusinessName = "Open Travel"
-	feedback.Title = "Points for Feedback by Open Travel"
+	feedback.Title = "Points for Feedback"
 	feedback.Description = "Earn points by sharing your thoughts on travel package and activities"
 	feedback.Conditions = append(feedback.Conditions, "1,000 points for travel package ")
 	feedback.Conditions = append(feedback.Conditions, "100 points for each travel activity")
@@ -637,7 +637,7 @@ func (t *SimpleChaincode) transferPoints(stub *shim.ChaincodeStub, args []string
 			json.Unmarshal(contractAsBytes, &thisContract)
 			
 			if (tx.ContractId == thisContract.Id) {
-				tx.Amount =  tx.Amount * thisContract.DiscountRate;
+				tx.Amount = tx.Amount -  (tx.Amount * thisContract.DiscountRate);
 			}
 		}
 	
