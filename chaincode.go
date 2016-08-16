@@ -247,7 +247,6 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	feedback.Title = "Points for Feedback"
 	feedback.Description = "Earn points by sharing your thoughts on travel package and activities"
 	feedback.Conditions = append(feedback.Conditions, "1,000 points for travel package ")
-	feedback.Conditions = append(feedback.Conditions, "100 points for each travel activity")
 	feedback.Conditions = append(feedback.Conditions, "Valid from May 24, 2016")
 	feedback.Icon = ""
 	feedback.Method = "feedbackContract"
