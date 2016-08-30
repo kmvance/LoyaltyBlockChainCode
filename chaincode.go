@@ -179,7 +179,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	var anthony User
 	anthony.UserId = "U3151672";
 	anthony.Name = "Anthony"
-	anthony.Balance = 500
+	anthony.Balance = 50000
 	anthony.Status  = "Silver"
 	anthony.Expiration = "2017-03-15"
 	anthony.Join  = "2015-08-15"
@@ -299,6 +299,8 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 		return t.Init(stub, "init", args)
 	} else if function == "transferPoints" {											//create a transaction
 		return t.transferPoints(stub, args)
+	} else if function == "addSmartContract" {											//create a transaction
+		return t.addSmartContract(stub, args)
 	} else if function == "incrementReferenceNumber" {											//create a transaction
 		return t.incrementReferenceNumber(stub, args)
 	} 
@@ -496,6 +498,68 @@ func feedbackContract(tx Transaction, stub *shim.ChaincodeStub) float64 {
   
   
 }
+
+func (t *SimpleChaincode) addSmartContract(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+
+
+	// Create new smart contract based on user input
+	var smartContract Contract
+	
+	discountRate, err := strconv.ParseFloat(args[4], 64)
+	if err != nil {
+		smartContract.Title= "Invalid Contract"
+	}else{
+		smartContract.DiscountRate = discountRate
+	}
+	
+	
+	smartContract.Id = args[0]
+	smartContract.BusinessId  = "T5940872"
+	smartContract.BusinessName = "Open Travel"
+	smartContract.Title = args[1]
+	smartContract.Description = ""
+	smartContract.Conditions = append(smartContract.Conditions, args[2])
+	smartContract.Conditions = append(smartContract.Conditions, args[3]) 
+	smartContract.Icon = ""
+	smartContract.Method = "travelContract"
+	
+	
+	jsonAsBytes, _ := json.Marshal(smartContract)
+	err = stub.PutState(smartContract.Id, jsonAsBytes)								
+	if err != nil {
+		fmt.Println("Error adding new smart contract")
+		return nil, err
+	}
+
+	contractIdsAsBytes, _ := stub.GetState("contractIds")
+	var contractIds []string
+	json.Unmarshal(contractIdsAsBytes, &contractIds)
+	
+	
+	var contractIdFound bool
+	contractIdFound = false;
+	for i := range contractIds{
+		if (contractIds[i] == smartContract.Id)  {
+			contractIdFound = true;
+		}
+	}
+	
+	if (!contractIdFound) {
+		contractIds = append(contractIds, smartContract.Id);
+	}
+	
+	
+	jsonAsBytes, _ = json.Marshal(contractIds)
+	err = stub.PutState("contractIds", jsonAsBytes)								
+	if err != nil {
+		fmt.Println("Error storing contract Ids on blockchain")
+		return nil, err
+	}
+
+	return nil, nil
+
+}
+
 
 // ============================================================================================================================
 // Transfer points between members of the Open Points Network
