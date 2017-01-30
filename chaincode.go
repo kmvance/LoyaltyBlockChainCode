@@ -160,7 +160,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	var natalie User
 	natalie.UserId = "U2974034";
 	natalie.Name = "Natalie"
-	natalie.Balance = 1000
+	natalie.Balance = 1001
 	natalie.Status  = "Platinum"
 	natalie.Expiration = "2017-06-01"
 	natalie.Join  = "2015-05-31"
