@@ -125,7 +125,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	bank.Status  = "Originator"
 	bank.Expiration = "2099-12-31"
 	bank.Join  = "2015-01-01"
-	bank.Modified = "2016-05-06"
+	bank.Modified = "2017-05-06"
 	bank.NumTxs  = 0
 	
 	
@@ -137,21 +137,21 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	}
 	
 	
-    // Create the 'Travel Agency' user and add it to the blockchain
-	var travel User
-	travel.UserId = "T5940872";
-	travel.Name = "Open Travel"
-	travel.Balance = 500000
-	travel.Status  = "Member"
-	travel.Expiration = "2099-12-31"
-	travel.Join  = "2015-01-01"
-	travel.Modified = "2016-05-06"
-	travel.NumTxs  = 0
+    // Create the 'Retail Agency' user and add it to the blockchain
+	var retail User
+	retail.UserId = "T5940872";
+	retail.Name = "Open Retail"
+	retail.Balance = 500000
+	retail.Status  = "Member"
+	retail.Expiration = "2099-12-31"
+	retail.Join  = "2015-01-01"
+	retail.Modified = "2017-05-06"
+	retail.NumTxs  = 0
 	
-	jsonAsBytes, _ = json.Marshal(travel)
-	err = stub.PutState(travel.UserId, jsonAsBytes)								
+	jsonAsBytes, _ = json.Marshal(retail)
+	err = stub.PutState(retail.UserId, jsonAsBytes)								
 	if err != nil {
-		fmt.Println("Error Creating Travel user account")
+		fmt.Println("Error Creating Retail user account")
 		return nil, err
 	}
 	
@@ -160,11 +160,11 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	var natalie User
 	natalie.UserId = "U2974034";
 	natalie.Name = "Natalie"
-	natalie.Balance = 1001
+	natalie.Balance = 1000
 	natalie.Status  = "Platinum"
 	natalie.Expiration = "2017-06-01"
 	natalie.Join  = "2015-05-31"
-	natalie.Modified = "2016-05-06"
+	natalie.Modified = "2017-05-06"
 	natalie.NumTxs  = 0
 	
 	jsonAsBytes, _ = json.Marshal(natalie)
@@ -183,7 +183,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	anthony.Status  = "Silver"
 	anthony.Expiration = "2017-03-15"
 	anthony.Join  = "2015-08-15"
-	anthony.Modified = "2016-04-17"
+	anthony.Modified = "2017-04-17"
 	anthony.NumTxs  = 0
 	
 	jsonAsBytes, _ = json.Marshal(anthony)
@@ -218,15 +218,15 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	var double Contract
 	double.Id = TRAVEL_CONTRACT
 	double.BusinessId  = "T5940872"
-	double.BusinessName = "Open Travel"
+	double.BusinessName = "Open Retail"
 	double.Title = "Paris for Less"
-	double.Description = "All Paris travel activities are half the stated point price"
-	double.Conditions = append(double.Conditions, "Half off dining and travel activities in Paris")
-	double.Conditions = append(double.Conditions, "Valid from May 11, 2016") 
+	double.Description = "All Sony purchases are half the stated point price"
+	double.Conditions = append(double.Conditions, "Half off all Sony purchases")
+	double.Conditions = append(double.Conditions, "Valid from May 11, 2017") 
 	double.Icon = ""
-	double.Method = "travelContract"
+	double.Method = "retailContract"
 	
-	startDate, _  := time.Parse(time.RFC822, "11 May 16 12:00 UTC")
+	startDate, _  := time.Parse(time.RFC822, "11 May 17 12:00 UTC")
 	double.StartDate = startDate
 	endDate, _  := time.Parse(time.RFC822, "31 Dec 60 11:59 UTC")
 	double.EndDate = endDate
@@ -243,14 +243,14 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
     var feedback Contract
 	feedback.Id = FEEDBACK_CONTRACT
 	feedback.BusinessId  = "T5940872"
-	feedback.BusinessName = "Open Travel"
+	feedback.BusinessName = "Open Retail"
 	feedback.Title = "Points for Feedback"
-	feedback.Description = "Earn points by sharing your thoughts on travel package and activities"
-	feedback.Conditions = append(feedback.Conditions, "1,000 points for travel package ")
-	feedback.Conditions = append(feedback.Conditions, "Valid from May 24, 2016")
+	feedback.Description = "Earn points by sharing your thoughts on retail packages"
+	feedback.Conditions = append(feedback.Conditions, "1,000 points for retail package ")
+	feedback.Conditions = append(feedback.Conditions, "Valid from May 24, 2017")
 	feedback.Icon = ""
 	feedback.Method = "feedbackContract"
-	startDate, _  = time.Parse(time.RFC822, "24 May 16 12:00 UTC")
+	startDate, _  = time.Parse(time.RFC822, "24 May 17 12:00 UTC")
 	feedback.StartDate = startDate
 	endDate, _  = time.Parse(time.RFC822, "31 Dec 60 11:59 UTC")
 	feedback.EndDate = endDate
@@ -447,7 +447,7 @@ func (t *SimpleChaincode) getReferenceNumber(stub shim.ChaincodeStubInterface)([
 // ============================================================================================================================
 // Smart contract for giving user double points
 // ============================================================================================================================
-func travelContract(tx Transaction, stub shim.ChaincodeStubInterface) float64 {
+func retailContract(tx Transaction, stub shim.ChaincodeStubInterface) float64 {
 
 
 	contractAsBytes, err := stub.GetState(TRAVEL_CONTRACT)
@@ -515,13 +515,13 @@ func (t *SimpleChaincode) addSmartContract(stub shim.ChaincodeStubInterface, arg
 	
 	smartContract.Id = args[0]
 	smartContract.BusinessId  = "T5940872"
-	smartContract.BusinessName = "Open Travel"
+	smartContract.BusinessName = "Open Retail"
 	smartContract.Title = args[1]
 	smartContract.Description = ""
 	smartContract.Conditions = append(smartContract.Conditions, args[2])
 	smartContract.Conditions = append(smartContract.Conditions, args[3]) 
 	smartContract.Icon = ""
-	smartContract.Method = "travelContract"
+	smartContract.Method = "retailContract"
 	
 	
 	jsonAsBytes, _ := json.Marshal(smartContract)
@@ -621,7 +621,7 @@ func (t *SimpleChaincode) transferPoints(stub shim.ChaincodeStubInterface, args 
 	
 	// Determine point amount to transfer based on contract type
 	if (tx.ContractId == TRAVEL_CONTRACT) {
-		tx.Amount = travelContract(tx, stub)
+		tx.Amount = retailContract(tx, stub)
 	} else if (tx.ContractId == FEEDBACK_CONTRACT) {
 		tx.Amount = feedbackContract(tx, stub)
 	}  else {
