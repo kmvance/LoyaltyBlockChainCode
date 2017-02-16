@@ -222,11 +222,11 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	double.Title = "Son_Brand for Less"
 	double.Description = "All Son_Brand purchases are 20% off the stated point price"
 	double.Conditions = append(double.Conditions, "20% off all Son_Brand purchases")
-	double.Conditions = append(double.Conditions, "Valid from May 11, 2017") 
+	double.Conditions = append(double.Conditions, "Valid from Janurary 11, 2017") 
 	double.Icon = ""
 	double.Method = "retailContract"
 	
-	startDate, _  := time.Parse(time.RFC822, "11 May 17 12:00 UTC")
+	startDate, _  := time.Parse(time.RFC822, "11 Janurary 17 12:00 UTC")
 	double.StartDate = startDate
 	endDate, _  := time.Parse(time.RFC822, "31 Dec 60 11:59 UTC")
 	double.EndDate = endDate
@@ -247,10 +247,10 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	feedback.Title = "Points for Feedback"
 	feedback.Description = "Earn points by sharing your thoughts on retail packages"
 	feedback.Conditions = append(feedback.Conditions, "1,000 points for retail package ")
-	feedback.Conditions = append(feedback.Conditions, "Valid from May 24, 2017")
+	feedback.Conditions = append(feedback.Conditions, "Valid from Janurary 24, 2017")
 	feedback.Icon = ""
 	feedback.Method = "feedbackContract"
-	startDate, _  = time.Parse(time.RFC822, "24 May 17 12:00 UTC")
+	startDate, _  = time.Parse(time.RFC822, "24 Janurary 17 12:00 UTC")
 	feedback.StartDate = startDate
 	endDate, _  = time.Parse(time.RFC822, "31 Dec 60 11:59 UTC")
 	feedback.EndDate = endDate
