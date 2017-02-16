@@ -629,6 +629,8 @@ func (t *SimpleChaincode) transferPoints(stub shim.ChaincodeStubInterface, args 
 		return nil, err
 	}
 	
+    fmt.Println("TP tx.ContractId: %s", tx.ContractId)
+    
 	// Determine point amount to transfer based on contract type
 	if (tx.ContractId == RETAIL_CONTRACT) {
 		tx.Amount = retailContract(tx, stub)
