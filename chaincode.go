@@ -102,7 +102,7 @@ type AllTransactions struct{
 func main() {
 	err := shim.Start(new(SimpleChaincode))
 	if err != nil {
-		fmt.Printf("Error starting Simple chaincode: %s", err)
+		fmt.Printf("Error starting Simple chaincode: ", err)
 	}
 }
 
@@ -460,9 +460,9 @@ func retailContract(tx Transaction, stub shim.ChaincodeStubInterface) float64 {
 	var pointsToTransfer float64
 	pointsToTransfer = tx.Amount
     
-    fmt.Println("RT tx.Date: %s", tx.Date)    
-    fmt.Println("RT contract.StartDate: %s", contract.StartDate)
-    fmt.Println("RT contract.EndDate: %s", contract.EndDate)
+    fmt.Println("RT tx.Date: ", tx.Date)    
+    fmt.Println("RT contract.StartDate: ", contract.StartDate)
+    fmt.Println("RT contract.EndDate: ", contract.EndDate)
     
 	if (tx.Date.After(contract.StartDate) && tx.Date.Before(contract.EndDate)) {
 	     pointsToTransfer = pointsToTransfer * 0.8
@@ -491,9 +491,9 @@ func feedbackContract(tx Transaction, stub shim.ChaincodeStubInterface) float64 
 	var pointsToTransfer float64
 	pointsToTransfer = 0
     
-    fmt.Println("FB tx.Date: %s", tx.Date)    
-    fmt.Println("FB contract.StartDate: %s", contract.StartDate)
-    fmt.Println("FB contract.EndDate: %s", contract.EndDate)
+    fmt.Println("FB tx.Date: ", tx.Date)    
+    fmt.Println("FB contract.StartDate: ", contract.StartDate)
+    fmt.Println("FB contract.EndDate: ", contract.EndDate)
     
 	if (tx.Date.After(contract.StartDate) && tx.Date.Before(contract.EndDate)) {
 	     pointsToTransfer = 1000
@@ -629,7 +629,7 @@ func (t *SimpleChaincode) transferPoints(stub shim.ChaincodeStubInterface, args 
 		return nil, err
 	}
 	
-    fmt.Println("TP tx.ContractId: %s", tx.ContractId)
+    fmt.Println("TP tx.ContractId: ", tx.ContractId)
     
 	// Determine point amount to transfer based on contract type
 	if (tx.ContractId == RETAIL_CONTRACT) {
