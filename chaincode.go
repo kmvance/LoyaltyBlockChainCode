@@ -497,10 +497,11 @@ func feedbackContract(tx Transaction, stub shim.ChaincodeStubInterface) float64 
     
 	if (tx.Date.After(contract.StartDate) && tx.Date.Before(contract.EndDate)) {
 	     pointsToTransfer = 1000
-		 
+	/*	 
 		 if (tx.Activities > 0) {
 			pointsToTransfer = pointsToTransfer + float64(tx.Activities)*100
 		 }
+    */
 	}
   
   
