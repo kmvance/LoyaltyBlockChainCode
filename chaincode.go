@@ -38,7 +38,7 @@ type SimpleChaincode struct {
 const NUM_TX_TO_RETURN = 27
 
 // Smart Contract Id numbers
-const TRAVEL_CONTRACT   = "Paris"
+const RETAIL_CONTRACT   = "Son_Brand"
 const FEEDBACK_CONTRACT = "Feedback"
 
 
@@ -216,12 +216,12 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	
 	// Create contract metadata for double points and add it to the blockchain
 	var double Contract
-	double.Id = TRAVEL_CONTRACT
+	double.Id = RETAIL_CONTRACT
 	double.BusinessId  = "T5940872"
 	double.BusinessName = "OpenRetail"
-	double.Title = "Paris for Less"
-	double.Description = "All Sony purchases are half the stated point price"
-	double.Conditions = append(double.Conditions, "Half off all Sony purchases")
+	double.Title = "Son_Brand for Less"
+	double.Description = "All Son_Brand purchases are 20%25 off the stated point price"
+	double.Conditions = append(double.Conditions, "20%25 off all Son_Brand purchases")
 	double.Conditions = append(double.Conditions, "Valid from May 11, 2017") 
 	double.Icon = ""
 	double.Method = "retailContract"
@@ -232,7 +232,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	double.EndDate = endDate
 	
 	jsonAsBytes, _ = json.Marshal(double)
-	err = stub.PutState(TRAVEL_CONTRACT, jsonAsBytes)								
+	err = stub.PutState(RETAIL_CONTRACT, jsonAsBytes)								
 	if err != nil {
 		fmt.Println("Error creating double contract")
 		return nil, err
@@ -265,7 +265,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	
 	// Create an array of contract ids to keep track of all contracts
 	var contractIds []string
-	contractIds = append(contractIds, TRAVEL_CONTRACT);
+	contractIds = append(contractIds, RETAIL_CONTRACT);
 	contractIds = append(contractIds, FEEDBACK_CONTRACT);
 	
 	jsonAsBytes, _ = json.Marshal(contractIds)
@@ -450,7 +450,7 @@ func (t *SimpleChaincode) getReferenceNumber(stub shim.ChaincodeStubInterface)([
 func retailContract(tx Transaction, stub shim.ChaincodeStubInterface) float64 {
 
 
-	contractAsBytes, err := stub.GetState(TRAVEL_CONTRACT)
+	contractAsBytes, err := stub.GetState(RETAIL_CONTRACT)
 	if err != nil {
 		return -99
 	}
@@ -460,7 +460,7 @@ func retailContract(tx Transaction, stub shim.ChaincodeStubInterface) float64 {
 	var pointsToTransfer float64
 	pointsToTransfer = tx.Amount
 	if (tx.Date.After(contract.StartDate) && tx.Date.Before(contract.EndDate)) {
-	     pointsToTransfer = pointsToTransfer * 0.5
+	     pointsToTransfer = pointsToTransfer * 0.2
 	}
  
  
@@ -620,7 +620,7 @@ func (t *SimpleChaincode) transferPoints(stub shim.ChaincodeStubInterface, args 
 	}
 	
 	// Determine point amount to transfer based on contract type
-	if (tx.ContractId == TRAVEL_CONTRACT) {
+	if (tx.ContractId == RETAIL_CONTRACT) {
 		tx.Amount = retailContract(tx, stub)
 	} else if (tx.ContractId == FEEDBACK_CONTRACT) {
 		tx.Amount = feedbackContract(tx, stub)
