@@ -220,8 +220,8 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	double.BusinessId  = "T5940872"
 	double.BusinessName = "OpenRetail"
 	double.Title = "Son_Brand for Less"
-	double.Description = "All Son_Brand purchases are 20%25 off the stated point price"
-	double.Conditions = append(double.Conditions, "20%25 off all Son_Brand purchases")
+	double.Description = "All Son_Brand purchases are 20% off the stated point price"
+	double.Conditions = append(double.Conditions, "20% off all Son_Brand purchases")
 	double.Conditions = append(double.Conditions, "Valid from May 11, 2017") 
 	double.Icon = ""
 	double.Method = "retailContract"
