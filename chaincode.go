@@ -140,7 +140,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
     // Create the 'Retail Agency' user and add it to the blockchain
 	var retail User
 	retail.UserId = "T5940872";
-	retail.Name = "Open Retail"
+	retail.Name = "OpenRetail"
 	retail.Balance = 500000
 	retail.Status  = "Member"
 	retail.Expiration = "2099-12-31"
@@ -218,7 +218,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	var double Contract
 	double.Id = TRAVEL_CONTRACT
 	double.BusinessId  = "T5940872"
-	double.BusinessName = "Open Retail"
+	double.BusinessName = "OpenRetail"
 	double.Title = "Paris for Less"
 	double.Description = "All Sony purchases are half the stated point price"
 	double.Conditions = append(double.Conditions, "Half off all Sony purchases")
@@ -243,7 +243,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
     var feedback Contract
 	feedback.Id = FEEDBACK_CONTRACT
 	feedback.BusinessId  = "T5940872"
-	feedback.BusinessName = "Open Retail"
+	feedback.BusinessName = "OpenRetail"
 	feedback.Title = "Points for Feedback"
 	feedback.Description = "Earn points by sharing your thoughts on retail packages"
 	feedback.Conditions = append(feedback.Conditions, "1,000 points for retail package ")
@@ -515,7 +515,7 @@ func (t *SimpleChaincode) addSmartContract(stub shim.ChaincodeStubInterface, arg
 	
 	smartContract.Id = args[0]
 	smartContract.BusinessId  = "T5940872"
-	smartContract.BusinessName = "Open Retail"
+	smartContract.BusinessName = "OpenRetail"
 	smartContract.Title = args[1]
 	smartContract.Description = ""
 	smartContract.Conditions = append(smartContract.Conditions, args[2])
