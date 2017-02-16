@@ -647,7 +647,11 @@ func (t *SimpleChaincode) transferPoints(stub shim.ChaincodeStubInterface, args 
 			contractAsBytes, _ := stub.GetState(contractIds[i])
 			var thisContract Contract
 			json.Unmarshal(contractAsBytes, &thisContract)
-			
+
+            fmt.Println("TP FOR tx.ContractId: ", tx.ContractId)
+            fmt.Println("TP FOR thisContract.Id: ", thisContract.Id)
+            fmt.Println("TP FOR thisContract.DiscountRate: ", thisContract.DiscountRate)
+            
 			if (tx.ContractId == thisContract.Id) {
 				tx.Amount = tx.Amount -  (tx.Amount * thisContract.DiscountRate);
 			}
