@@ -460,9 +460,9 @@ func retailContract(tx Transaction, stub shim.ChaincodeStubInterface) float64 {
 	var pointsToTransfer float64
 	pointsToTransfer = tx.Amount
     
-    fmt.Println("FB tx.Date: %s", tx.Date)    
-    fmt.Println("FB contract.StartDate: %s", contract.StartDate)
-    fmt.Println("FB contract.EndDate: %s", contract.EndDate)
+    fmt.Println("RT tx.Date: %s", tx.Date)    
+    fmt.Println("RT contract.StartDate: %s", contract.StartDate)
+    fmt.Println("RT contract.EndDate: %s", contract.EndDate)
     
 	if (tx.Date.After(contract.StartDate) && tx.Date.Before(contract.EndDate)) {
 	     pointsToTransfer = pointsToTransfer * 0.8
