@@ -459,9 +459,9 @@ func retailContract(tx Transaction, stub shim.ChaincodeStubInterface) float64 {
 	
 	var pointsToTransfer float64
 	pointsToTransfer = tx.Amount
-    pointsToTransfer = pointsToTransfer * 0.2
+    pointsToTransfer = pointsToTransfer * 0.8
 	if (tx.Date.After(contract.StartDate) && tx.Date.Before(contract.EndDate)) {
-	     pointsToTransfer = pointsToTransfer * 0.2
+	     pointsToTransfer = pointsToTransfer * 0.8
 	}
  
  
