@@ -29,7 +29,7 @@ import (
 
 )
 
-// Test comment1
+// Test comment
 // SimpleChaincode example simple Chaincode implementation
 type SimpleChaincode struct {
 }
