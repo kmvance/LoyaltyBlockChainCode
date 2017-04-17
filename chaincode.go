@@ -38,7 +38,7 @@ type SimpleChaincode struct {
 const NUM_TX_TO_RETURN = 27
 
 // Smart Contract Id numbers
-const RETAIL_CONTRACT   = "Sammy"
+const RETAIL_CONTRACT   = "Sonic"
 const FEEDBACK_CONTRACT = "Feedback"
 
 
@@ -219,9 +219,9 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	double.Id = RETAIL_CONTRACT
 	double.BusinessId  = "T5940872"
 	double.BusinessName = "OpenRetail"
-	double.Title = "Sammy for Less"
-	double.Description = "All Sammy purchases are 20% off the stated point price"
-	double.Conditions = append(double.Conditions, "20% off all Sammy purchases")
+	double.Title = "Sonic for Less"
+	double.Description = "All Sonic purchases are 20% off the stated point price"
+	double.Conditions = append(double.Conditions, "20% off all Sonic purchases")
 	double.Conditions = append(double.Conditions, "Valid from Janurary 11, 2017") 
 	double.Icon = ""
 	double.Method = "retailContract"
