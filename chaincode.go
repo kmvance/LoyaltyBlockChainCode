@@ -121,7 +121,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	var bank User
 	bank.UserId = "B1928564";
 	bank.Name = "OpenFN"
-	bank.Balance = 1000000
+	bank.Balance = 2000000
 	bank.Status  = "Originator"
 	bank.Expiration = "2099-12-31"
 	bank.Join  = "2015-01-01"
@@ -141,7 +141,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	var retail User
 	retail.UserId = "T5940872";
 	retail.Name = "OpenRetail"
-	retail.Balance = 500000
+	retail.Balance = 700000
 	retail.Status  = "Member"
 	retail.Expiration = "2099-12-31"
 	retail.Join  = "2015-01-01"
